@@ -44,9 +44,10 @@ export default function AddNetworkNode({ setReloadNetworkNode, setAddNetworkNode
   return (
     <div className="modal">
       <form className="address-form" onSubmit={handlerSubmit}>
-        <h2>Добавить узел подключения</h2>
+        <h2>Добавить диспетчерское наименование узла электросети</h2>
         <div className="address-form__row">
           <input
+          className="address-form__input"
             type="text"
             value={nameNetworkNode}
             onChange={(event) => {

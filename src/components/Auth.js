@@ -5,6 +5,7 @@ import { authUrl } from "../config/apiPath";
 export default function Auth({ setCurrentUser }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState(false);
 
   const handlerSubmit = (event) => {
     event.preventDefault();
@@ -24,6 +25,7 @@ export default function Auth({ setCurrentUser }) {
       })
       .catch((error) => {
         console.log("An error occurred:", error);
+        setError(true)
       });
   };
   return (
@@ -61,10 +63,11 @@ export default function Auth({ setCurrentUser }) {
         </div>
         <div className="auth__row">
           <button className="auth__button" type="submit">
-            Залогиниться
+            Авторизироваться
           </button>
         </div>
       </form>
+      {error && <h3 style={{color: "#f00"}}> Неправильный логин или пароль</h3>}
     </div>
   );
 }

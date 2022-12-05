@@ -1,13 +1,18 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { getDisconnectedUrl, getZoneUrl } from "../config/apiPath";
 import Cookies from "js-cookie";
 import DatePicker from "react-date-picker";
 import { DateTime } from "luxon";
+import EditDisconnect from "./EditDisconnect";
+import { Context } from "../Context";
 const start = new Date();
 const finish = new Date();
 finish.setDate(finish.getDate() + 1);
 export default function ListDisconected() {
+  const { setReloadList, reloadList } = useContext(Context);
+  const [editDisconnect, setEditDisconnect] = useState(false);
+  const [reload, setReload] = useState(false);
   const [begin, setBegin] = useState(new Date());
   const [end, setEnd] = useState(finish);
   const [listDisconnect, setListDisconnect] = useState();
@@ -23,51 +28,75 @@ export default function ListDisconected() {
           },
         })
         .then((response) => {
-          console.log(response.data[0].id);
-          //setListDisconnect(response.data[0].otklyuchenies);
-          return response.data[0].otklyuchenies;
+          // console.log(response.data);
+          Cookies.set("zone", response.data[0].id);
+          Cookies.set("nameZone", response.data[0].name);
+          setListDisconnect(response.data[0].otklyuchenies);
+          //return response.data[0].otklyuchenies;
         })
-        .then( (otklyuchenies) => {
-          //console.log(otklyuchenies)
-          let newotklyuchenies = [...otklyuchenies];
-          otklyuchenies.forEach(async (item, index) => {
-            await axios.get(getDisconnectedUrl + `/${item.id}?populate[0]=uzel_podklyucheniya`).then((response) => {
-              //console.log(response.data.data.attributes.uzel_podklyucheniya.data)
-              newotklyuchenies[index].uzelName = response.data.data.attributes.uzel_podklyucheniya.data?response.data.data.attributes.uzel_podklyucheniya.data.attributes.name:"-";
-            });
-          });
-          console.log(newotklyuchenies)
-          return newotklyuchenies
-        })
-        .then(newotklyuchenies=>setListDisconnect(newotklyuchenies))
         .catch((error) => {
           // Handle error.
           console.log("An error occurred:", error);
         });
     }
-  }, [begin, end]);
+    if (reload || reloadList) {
+      setReload(false);
+      setReloadList(false);
+    }
+  }, [begin, end, reload, reloadList]);
+
   const handlerEdit = (event) => {
-    console.log(event.target.dataset.id);
+    setEditDisconnect(
+      listDisconnect.find((item) => {
+        //console.log(item)
+        return item.id == event.target.dataset.id;
+      })
+    );
+    //console.log(event.target.dataset.id);
+  };
+  const handlerDel = (event) => {
+      axios
+        .delete(getDisconnectedUrl + `/${event.target.dataset.id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((response) => {
+          //console.log(response)
+          setReloadList(true);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
   };
   //console.log(listDisconnect)
   return (
     <div className="disconnect__item disconnected">
-      <h2 className="disconnected__title"> Отключения между датами: </h2>
+      <h2 className="disconnected__title"> Период отключений: </h2>
+
       <div className="date-block">
         <div className="date-block__item">
           <span>С: </span>
-          <DatePicker onChange={setBegin} value={begin} />
+          <DatePicker onChange={setBegin} value={begin} showLeadingZeros={true} clearIcon={null}/>
         </div>
         <div className="date-block__item">
-          <span>До: </span>
-          <DatePicker onChange={setEnd} value={end} />
+          <span>По: </span>
+          <DatePicker onChange={setEnd} value={end} showLeadingZeros={true} clearIcon={null}/>
         </div>
+        <button
+          className="button-main"
+          onClick={() => {
+            setReload(true);
+          }}
+        >
+          Обновить
+        </button>
       </div>
 
       <table>
         <thead>
           <tr>
-            <th>ID</th>
+            <th>№</th>
             <th>Узел</th>
             <th>Комментарий</th>
             <th>Начало</th>
@@ -83,24 +112,31 @@ export default function ListDisconected() {
               return (
                 <tr className="disconnected__item" key={index}>
                   <td>{item.id}</td>
-                  <td>{item.uzelName}</td>
+                  <td>{item.uzel_podklyucheniya && item.uzel_podklyucheniya.name ? item.uzel_podklyucheniya.name : "-"}</td>
                   <td>{item.comment}</td>
                   <td>
-                    {begin.day < 10 ? "0" + begin.day : begin.day}-{begin.month < 10 ? "0" + begin.month : begin.month}-{begin.year} {begin.hour < 10 ? "0" + begin.hour : begin.hour}:{begin.minute < 10 ? "0" + begin.minute : begin.minute}
+                    {begin.day < 10 ? "0" + begin.day : begin.day}.{begin.month < 10 ? "0" + begin.month : begin.month}.{begin.year} {begin.hour < 10 ? "0" + begin.hour : begin.hour}:{begin.minute < 10 ? "0" + begin.minute : begin.minute}
                   </td>
                   <td>
-                    {end.day < 10 ? "0" + end.day : end.day}-{end.month < 10 ? "0" + end.month : end.month}-{end.year} {end.hour < 10 ? "0" + end.hour : end.hour}:{end.minute < 10 ? "0" + end.minute : end.minute}
+                    {end.day < 10 ? "0" + end.day : end.day}.{end.month < 10 ? "0" + end.month : end.month}.{end.year} {end.hour < 10 ? "0" + end.hour : end.hour}:{end.minute < 10 ? "0" + end.minute : end.minute}
                   </td>
                   <td>
-                    <a className="disconnected__edit" data-id={item.id} onClick={handlerEdit}>
-                      ✎
-                    </a>
+                    <div className="disconnected__flex">
+                      <a className="disconnected__edit" data-id={item.id} onClick={handlerEdit}>
+                        ✎
+                      </a>
+                      <a className="disconnected__del" data-id={item.id} onClick={handlerDel}>
+                      ✖
+                      </a>
+                    </div>
                   </td>
                 </tr>
               );
             })}
         </tbody>
       </table>
+      {listDisconnect && listDisconnect.length === 0 && <h3 style={{ textAlign: "center" }}>Отключений в данном периоде нет</h3>}
+      {editDisconnect && <EditDisconnect editDisconnect={editDisconnect} setEditDisconnect={setEditDisconnect} setReload={setReload} />}
     </div>
   );
 }

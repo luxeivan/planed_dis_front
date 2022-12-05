@@ -9,7 +9,8 @@ export default function Header({ user, handlerLogoff }) {
         {!user ? (
           <div></div>
         ) : (
-          <div className="">
+          <div className="header__title">
+            <span className="header__nameZone">{user.nameZone}</span><br/>
             Добро пожаловать, {user.firstname} {user.lastname}!
           </div>
         )}

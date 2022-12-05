@@ -5,8 +5,12 @@ import { useEffect, useState } from "react";
 import Header from "./components/Header";
 import ListDisconected from "./components/ListDisconected";
 import AddDisconnect from "./components/AddDisconnect";
+import { Context } from "./Context";
+
+
 
 function App() {
+  const [reloadList,setReloadList] = useState(false)
   const [logon, setLogon] = useState(false);
   const [user, setUser] = useState();
   useEffect(() => {
@@ -16,7 +20,7 @@ function App() {
   }, []);
   useEffect(() => {
     if (Cookies.get("id")) {
-      setUser({ id: Cookies.get("id"), username: Cookies.get("username"), firstname: Cookies.get("firstname"), lastname: Cookies.get("lastname") });
+      setUser({ id: Cookies.get("id"), nameZone: Cookies.get("nameZone"), username: Cookies.get("username"), firstname: Cookies.get("firstname"), lastname: Cookies.get("lastname") });
     } else {
       setUser();
     }
@@ -38,14 +42,16 @@ function App() {
     setLogon(false);
   };
   return (
+    <Context.Provider value={{setReloadList,reloadList}}>
     <div className="App">
-      <Header user={user} handlerLogoff={handlerLogoff} />
+      <Header user={user} handlerLogoff={handlerLogoff}/>
       {!logon && <Auth setCurrentUser={setCurrentUser} />}
       {logon && <div className="disconnect">
         <ListDisconected/>
         <AddDisconnect/>
         </div>}
     </div>
+    </Context.Provider>
   );
 }
 

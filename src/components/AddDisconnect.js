@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { getCityUrl, getPointConnectedUrl, getStreetUrl,getDisconnectedUrl } from "../config/apiPath";
+import { getCityUrl, getPointConnectedUrl, getStreetUrl, getDisconnectedUrl } from "../config/apiPath";
 import Cookies from "js-cookie";
 import AddCity from "./AddCity";
 import AddNetworkNode from "./AddNetworkNode";
 import AddStreet from "./AddStreet";
 import DateTimePicker from "react-datetime-picker";
+import AddedDisconnect from "./AddedDisconnect";
 
 export default function AddDisconnect() {
+  const [showAddedDisconnect, setShowAddedDisconnect] = useState(false);
   const [addCity, setAddCity] = useState(false);
   const [addNetworkNode, setAddNetworkNode] = useState(false);
   const [addStreet, setAddStreet] = useState(false);
@@ -27,10 +29,10 @@ export default function AddDisconnect() {
   const [begin, setBegin] = useState(new Date());
   const [end, setEnd] = useState(new Date());
 
-  const [comment, setComment] = useState();
+  const [commentValue, setCommentValue] = useState("");
   const token = Cookies.get("jwt");
   useEffect(() => {
-    console.log(begin, end);
+    // console.log(begin, end);
   }, [begin, end]);
   //------------Загрузка городов НАЧАЛО
   useEffect(() => {
@@ -45,6 +47,9 @@ export default function AddDisconnect() {
       })
       .catch((error) => {
         console.log("An error occurred:", error);
+        if (error.response.status == 401) {
+          window.location = "/";
+        }
       });
     if (reloadCity) {
       setReloadCity(false);
@@ -65,6 +70,9 @@ export default function AddDisconnect() {
         })
         .catch((error) => {
           console.log("An error occurred:", error);
+          if (error.response.status == 401) {
+            window.location = "/";
+          }
         });
     } else {
       setListNetworkNode(null);
@@ -90,6 +98,9 @@ export default function AddDisconnect() {
         })
         .catch((error) => {
           console.log("An error occurred:", error);
+          if (error.response.status == 401) {
+            window.location = "/";
+          }
         });
     } else {
       setListStreet(null);
@@ -101,7 +112,7 @@ export default function AddDisconnect() {
   //------------Загрузка улиц КОНЕЦ
   const handlerSubmit = (event) => {
     event.preventDefault();
-    if (selectCity,selectNetworkNode,begin,end) {
+    if ((selectCity, selectNetworkNode, begin, end)) {
       axios
         .post(
           getDisconnectedUrl,
@@ -109,9 +120,9 @@ export default function AddDisconnect() {
             data: {
               begin: begin,
               end: end,
-              comment:comment,
+              comment: commentValue,
               uzel_podklyucheniya: selectNetworkNode,
-              zona_otvetstvennosti: ""
+              zona_otvetstvennosti: Cookies.get("zone"),
             },
           },
           {
@@ -121,13 +132,17 @@ export default function AddDisconnect() {
           }
         )
         .then((response) => {
-            console.log(response);
+          //console.log(response);
         })
         .catch((error) => {
           console.log("An error occurred:", error);
         });
     }
-    console.log("addDisconnect");
+    // console.log("addDisconnect");
+    setSelectCity("");
+    setSelectNetworkNode("");
+    setReloadCity(true);
+    setShowAddedDisconnect(true);
   };
   return (
     <div className="disconnect__item disconnect-add">
@@ -155,7 +170,9 @@ export default function AddDisconnect() {
               }
             }}
           >
-            <option value="">----</option>
+            <option value="" selected={selectCity == ""}>
+              ----
+            </option>
             {listCity &&
               listCity.map((item, index) => {
                 return (
@@ -235,7 +252,26 @@ export default function AddDisconnect() {
                       <div className="street-table__td">{item.attributes.name}</div>
                       <div className="street-table__td">{item.attributes.comment}</div>
                       <div className="street-table__td">
-                        <a className="disconnected__edit" data-id={item.id} onClick={() => {}}>
+                        <a
+                          className="disconnected__del"
+                          data-id={item.id}
+                          onClick={async (event) => {
+                            //console.log(event.target.dataset.id);
+                            axios
+                              .delete(getStreetUrl + `/${event.target.dataset.id}`, {
+                                headers: {
+                                  Authorization: `Bearer ${token}`,
+                                },
+                              })
+                              .then((response) => {
+                                //console.log(response)
+                                setReloadStreet(true);
+                              })
+                              .catch((err) => {
+                                console.log(err);
+                              });
+                          }}
+                        >
                           ✖
                         </a>
                       </div>
@@ -260,22 +296,22 @@ export default function AddDisconnect() {
               </label>
               <div className="period__row">
                 <span className="period__title">Начало:</span>
-                <DateTimePicker onChange={setBegin} value={begin} />
+                <DateTimePicker onChange={setBegin} value={begin} showLeadingZeros={true} clearIcon={null}/>
                 <br />
               </div>
               <div className="period__row">
                 <span className="period__title">Конец:</span>
-                <DateTimePicker onChange={setEnd} value={end} />
+                <DateTimePicker onChange={setEnd} value={end} showLeadingZeros={true} clearIcon={null}/>
               </div>
             </div>
             <div className="disconnect-add__row comment">
               <label htmlFor="comment" className="disconnect-add__label">
-                Укажите комментарий:
+                Напишите уточняющий комментарий:
               </label>
-              <input type="text" name="comment" value={comment} onChange={setComment} className="comment__input" />
+              <input type="text" name="commentValue" value={commentValue} onChange={(event) => setCommentValue(event.target.value)} className="comment__input" />
             </div>
-            <div className="disconnect-add__row period">
-              <button type="submit" className="button-main">
+            <div className="disconnect-add__row disconnect-add__button-area">
+              <button type="submit" className="button-main disconnect-add__button">
                 Добавить отключение
               </button>
             </div>
@@ -285,6 +321,7 @@ export default function AddDisconnect() {
       {addCity && <AddCity setAddCity={setAddCity} setReloadCity={setReloadCity} />}
       {addNetworkNode && <AddNetworkNode setAddNetworkNode={setAddNetworkNode} setReloadNetworkNode={setReloadNetworkNode} cityId={selectCity} />}
       {addStreet && <AddStreet setAddStreet={setAddStreet} setReloadStreet={setReloadStreet} networkNodeId={selectNetworkNode} selectCity={selectCity} />}
+      {showAddedDisconnect && <AddedDisconnect setShowAddedDisconnect={setShowAddedDisconnect} />}
     </div>
   );
 }
