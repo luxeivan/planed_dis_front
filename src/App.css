@@ -314,10 +314,16 @@ td {
     width: 100vw;
   }
 }
-@media (max-width: 500px) {
+@media (max-width: 800px) {
+  .header__title {
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+  }
   .header {
     flex-direction: column;
   }
+}
+@media (max-width: 500px) {
   .header__item {
     margin-bottom: 10px;
   }

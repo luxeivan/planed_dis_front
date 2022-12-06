@@ -1,7 +1,7 @@
 import React from "react";
 import logo from "../img/logo.2f5542c777487560a5db0375fd18bd99.svg";
 
-export default function Header({ user, handlerLogoff }) {
+export default function Header({ user, handlerLogoff,nameZone }) {
   return (
     <header className="header">
       <div className="header__item header__logo">
@@ -12,7 +12,7 @@ export default function Header({ user, handlerLogoff }) {
           <div></div>
         ) : (
           <div className="header__title">
-            <div className="header__name-zone">{user.nameZone}</div>
+            <div className="header__name-zone">{nameZone}</div>
             <div className="header__user-zone">
               Добро пожаловать, {user.firstname} {user.lastname}!
             </div>

@@ -12,6 +12,7 @@ import { Context } from "./Context";
 function App() {
   const [reloadList,setReloadList] = useState(false)
   const [logon, setLogon] = useState(false);
+  const [nameZone, setNameZone] = useState(false);
   const [user, setUser] = useState();
   useEffect(() => {
     if (Cookies.get("id")) {
@@ -33,21 +34,28 @@ function App() {
     Cookies.set("jwt", jwt, { expires: 0.041 });
     setLogon(true);
   };
+  const setCurrentZone = ({ zone,nameZone }) => {
+    Cookies.set("zone", zone, { expires: 0.041 });
+    Cookies.set("nameZone", nameZone, { expires: 0.041 });
+    setNameZone(nameZone);
+  };
   const handlerLogoff = () => {
     Cookies.remove("id");
     Cookies.remove("username");
     Cookies.remove("jwt");
     Cookies.remove("firstname");
     Cookies.remove("lastname");
+    Cookies.remove("zone");
+    Cookies.remove("nameZone");
     setLogon(false);
   };
   return (
     <Context.Provider value={{setReloadList,reloadList}}>
     <div className="App">
-      <Header user={user} handlerLogoff={handlerLogoff}/>
+      <Header user={user} nameZone={nameZone} handlerLogoff={handlerLogoff}/>
       {!logon && <Auth setCurrentUser={setCurrentUser} />}
       {logon && <div className="disconnect">
-        <ListDisconected/>
+        <ListDisconected setCurrentZone={setCurrentZone}/>
         <AddDisconnect/>
         </div>}
     </div>

@@ -9,7 +9,7 @@ import { Context } from "../Context";
 const start = new Date();
 const finish = new Date();
 finish.setDate(finish.getDate() + 1);
-export default function ListDisconected() {
+export default function ListDisconected({ setCurrentZone }) {
   const { setReloadList, reloadList } = useContext(Context);
   const [editDisconnect, setEditDisconnect] = useState(false);
   const [reload, setReload] = useState(false);
@@ -29,8 +29,7 @@ export default function ListDisconected() {
         })
         .then((response) => {
           // console.log(response.data);
-          Cookies.set("zone", response.data[0].id);
-          Cookies.set("nameZone", response.data[0].name);
+          setCurrentZone({ zone: response.data[0].id, nameZone: response.data[0].name });
           setListDisconnect(response.data[0].otklyuchenies);
           //return response.data[0].otklyuchenies;
         })
@@ -55,19 +54,19 @@ export default function ListDisconected() {
     //console.log(event.target.dataset.id);
   };
   const handlerDel = (event) => {
-      axios
-        .delete(getDisconnectedUrl + `/${event.target.dataset.id}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
-        .then((response) => {
-          //console.log(response)
-          setReloadList(true);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+    axios
+      .delete(getDisconnectedUrl + `/${event.target.dataset.id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        //console.log(response)
+        setReloadList(true);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
   //console.log(listDisconnect)
   return (
@@ -77,11 +76,11 @@ export default function ListDisconected() {
       <div className="date-block">
         <div className="date-block__item">
           <span>С: </span>
-          <DatePicker onChange={setBegin} value={begin} showLeadingZeros={true} clearIcon={null}/>
+          <DatePicker onChange={setBegin} value={begin} showLeadingZeros={true} clearIcon={null} />
         </div>
         <div className="date-block__item">
           <span>По: </span>
-          <DatePicker onChange={setEnd} value={end} showLeadingZeros={true} clearIcon={null}/>
+          <DatePicker onChange={setEnd} value={end} showLeadingZeros={true} clearIcon={null} />
         </div>
         <button
           className="button-main"
@@ -126,7 +125,7 @@ export default function ListDisconected() {
                         ✎
                       </a>
                       <a className="disconnected__del" data-id={item.id} onClick={handlerDel}>
-                      ✖
+                        ✖
                       </a>
                     </div>
                   </td>

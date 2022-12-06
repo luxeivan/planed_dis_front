@@ -25,7 +25,11 @@ export default function Auth({ setCurrentUser }) {
       })
       .catch((error) => {
         console.log("An error occurred:", error);
-        setError(true)
+        if (error.response) {
+          setError('Неправильный логин или пароль');
+        } else {
+          setError("Нет связи с сервером");
+        }
       });
   };
   return (
@@ -67,7 +71,7 @@ export default function Auth({ setCurrentUser }) {
           </button>
         </div>
       </form>
-      {error && <h3 style={{color: "#f00"}}> Неправильный логин или пароль</h3>}
+      {error && <h3 style={{ color: "#f00" }}> {error}</h3>}
     </div>
   );
 }
