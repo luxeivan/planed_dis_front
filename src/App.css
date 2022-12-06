@@ -8,10 +8,14 @@
 }
 .header__title{
   text-align: center;
+  flex: 1;
+  display: flex;
+  justify-content: space-around;
 }
-.header__nameZone{
+.header__name-zone{
 color:#e37021;
 font-weight: 700;
+margin-right: 30px;
 }
 .auth {
   display: flex;
@@ -305,7 +309,7 @@ td {
   align-items: center;
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 1200px) {
   .disconnect__item {
     width: 100vw;
   }

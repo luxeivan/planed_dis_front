@@ -22,7 +22,7 @@ export default function ListDisconected() {
       //   console.log(begin.getTime());
       //   console.log(end.getTime());
       axios
-        .get(getZoneUrl + `?begin=${begin.getTime()}&end=${end.getTime()}`, {
+        .get(getZoneUrl + `?begin=${begin.getTime()}&end=${end.getTime()}&pagination[pageSize]=100000`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },

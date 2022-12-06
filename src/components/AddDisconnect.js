@@ -37,7 +37,7 @@ export default function AddDisconnect() {
   //------------Загрузка городов НАЧАЛО
   useEffect(() => {
     axios
-      .get(getCityUrl, {
+      .get(getCityUrl+"?pagination[pageSize]=100000", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -60,7 +60,7 @@ export default function AddDisconnect() {
   useEffect(() => {
     if (selectCity) {
       axios
-        .get(getPointConnectedUrl + `?filters[gorod][id][$eq]=${selectCity}`, {
+        .get(getPointConnectedUrl + `?filters[gorod][id][$eq]=${selectCity}&pagination[pageSize]=100000`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -88,7 +88,7 @@ export default function AddDisconnect() {
   useEffect(() => {
     if (selectCity && selectNetworkNode) {
       axios
-        .get(getStreetUrl + `?filters[uzel_podklyucheniya][id][$eq]=${selectNetworkNode}`, {
+        .get(getStreetUrl + `?filters[uzel_podklyucheniya][id][$eq]=${selectNetworkNode}&pagination[pageSize]=100000`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -115,7 +115,7 @@ export default function AddDisconnect() {
     if ((selectCity, selectNetworkNode, begin, end)) {
       axios
         .post(
-          getDisconnectedUrl,
+          getDisconnectedUrl+"?pagination[pageSize]=100000",
           {
             data: {
               begin: begin,
@@ -258,7 +258,7 @@ export default function AddDisconnect() {
                           onClick={async (event) => {
                             //console.log(event.target.dataset.id);
                             axios
-                              .delete(getStreetUrl + `/${event.target.dataset.id}`, {
+                              .delete(getStreetUrl + `/${event.target.dataset.id}?pagination[pageSize]=100000`, {
                                 headers: {
                                   Authorization: `Bearer ${token}`,
                                 },

@@ -1,17 +1,21 @@
 import React from "react";
-import logo from '../img/logo.2f5542c777487560a5db0375fd18bd99.svg'
+import logo from "../img/logo.2f5542c777487560a5db0375fd18bd99.svg";
 
 export default function Header({ user, handlerLogoff }) {
   return (
     <header className="header">
-      <div className="header__item header__logo"><img src={logo} /></div>
+      <div className="header__item header__logo">
+        <img src={logo} alt="logo" />
+      </div>
       <div className="header__item header__center">
         {!user ? (
           <div></div>
         ) : (
           <div className="header__title">
-            <span className="header__nameZone">{user.nameZone}</span><br/>
-            Добро пожаловать, {user.firstname} {user.lastname}!
+            <div className="header__name-zone">{user.nameZone}</div>
+            <div className="header__user-zone">
+              Добро пожаловать, {user.firstname} {user.lastname}!
+            </div>
           </div>
         )}
       </div>
