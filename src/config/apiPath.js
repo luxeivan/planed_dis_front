@@ -1,4 +1,4 @@
-const addressServer = "http://localhost:1337";
+const addressServer = "https://nopowersupply.mosoblenergo.ru/back";
 
 export const getCityUrl = addressServer + "/api/gorods";
 export const getDisconnectedUrl = addressServer + "/api/otklyuchenies";
