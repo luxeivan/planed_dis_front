@@ -66,7 +66,7 @@ export default function AddDisconnect() {
           },
         })
         .then((response) => {
-          setListNetworkNode(response.data.data);
+          setListNetworkNode(response.data.data.sort((a,b) => (a.attributes.name > b.attributes.name) ? 1 : ((b.attributes.name > a.attributes.name) ? -1 : 0)));
         })
         .catch((error) => {
           console.log("An error occurred:", error);
