@@ -350,4 +350,7 @@ td {
   .disconnected__del{
     margin: 0;
   }
+  .address-form{
+    width: 100vw;
+  }
 }
