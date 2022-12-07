@@ -25,7 +25,7 @@ margin-right: 30px;
   flex-direction: column;
 }
 .auth__form {
-  min-width: 50%;
+  width: 350px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -214,6 +214,10 @@ td {
   margin: 10px;
   text-align: center;
 }
+.address-form__row label{
+  display: block;
+  color: #999;
+}
 .address-form__input {
   padding: 10px;
   width: 50%;
@@ -228,6 +232,12 @@ td {
 }
 .address-form__submit:hover {
   background-color: #1170bb;
+}
+.address-form__submit:disabled {
+  background-color: #bbb;
+}
+.address-form__submit:disabled:hover {
+  cursor: default;
 }
 .fias-list {
   background-color: #fff;

@@ -76,6 +76,9 @@ export default function AddCity({ setReloadCity, setAddCity }) {
         })
         .catch((error) => {
           console.log("An error occurred:", error);
+          if(error.response.data.error.message=="This attribute must be unique"){
+            alert("Этот город уже есть в списке.");
+          }
         });
     }
   };
