@@ -34,7 +34,7 @@ export default function Auth({ setCurrentUser }) {
   };
   return (
     <div className="auth">
-      <h2>Пожалуйста авторизируйтесь</h2>
+      <h2>Плановые отключения</h2>
       <form className="auth__form" onSubmit={handlerSubmit}>
         <div className="auth__row">
           <label className="auth__label" htmlFor="login">
@@ -67,7 +67,7 @@ export default function Auth({ setCurrentUser }) {
         </div>
         <div className="auth__row">
           <button className="auth__button" type="submit">
-            Авторизироваться
+            Войти
           </button>
         </div>
       </form>

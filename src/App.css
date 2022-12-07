@@ -162,6 +162,13 @@ td {
   color: #e37021;
   transform: scale(1.3);
 }
+.to-site {
+  margin-top: 20px;
+  text-align: center;
+}
+.to-site__link {
+  text-decoration: none;
+}
 .disconnect-add {
   padding: 5px;
 }
@@ -347,10 +354,10 @@ td {
   .disconnected__flex {
     flex-direction: column;
   }
-  .disconnected__del{
+  .disconnected__del {
     margin: 0;
   }
-  .address-form{
+  .address-form {
     width: 100vw;
   }
 }
