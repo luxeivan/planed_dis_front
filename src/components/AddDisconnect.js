@@ -43,7 +43,7 @@ export default function AddDisconnect() {
         },
       })
       .then((response) => {
-        setListCity(response.data.data);
+        setListCity(response.data.data.sort((a,b) => (a.attributes.name > b.attributes.name) ? 1 : ((b.attributes.name > a.attributes.name) ? -1 : 0)));
       })
       .catch((error) => {
         console.log("An error occurred:", error);
