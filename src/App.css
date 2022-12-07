@@ -168,6 +168,12 @@ td {
 }
 .to-site__link {
   text-decoration: none;
+  color: #333;
+  display: inline-block;
+  transition: all 0.3s;
+}
+.to-site__link:hover {
+  transform: scale(1.02);
 }
 .disconnect-add {
   padding: 5px;

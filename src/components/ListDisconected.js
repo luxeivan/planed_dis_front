@@ -135,7 +135,7 @@ export default function ListDisconected({ setCurrentZone }) {
         </tbody>
       </table>
       <div className="to-site">
-        <a href="https://mosoblenergo.ru/plannedOutages" target="_blank" className="to-site__link button-main">На сайт Mosoblenergo.ru</a>
+        <a href="https://mosoblenergo.ru/plannedOutages" target="_blank" className="to-site__link">Посмотреть отключения на Mosoblenergo.ru</a>
       </div>
       {listDisconnect && listDisconnect.length === 0 && <h3 style={{ textAlign: "center" }}>Отключений в данном периоде нет</h3>}
       {editDisconnect && <EditDisconnect editDisconnect={editDisconnect} setEditDisconnect={setEditDisconnect} setReload={setReload} />}
