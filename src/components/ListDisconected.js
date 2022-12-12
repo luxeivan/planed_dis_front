@@ -112,7 +112,7 @@ export default function ListDisconected({ setCurrentZone }) {
                 <tr className="disconnected__item" key={index}>
                   <td>{item.id}</td>
                   <td>{item.uzel_podklyucheniya && item.uzel_podklyucheniya.name ? item.uzel_podklyucheniya.name : "-"}</td>
-                  <td>{item.comment}</td>
+                  <td className="disconnected__comment">{item.comment}</td>
                   <td>
                     {begin.day < 10 ? "0" + begin.day : begin.day}.{begin.month < 10 ? "0" + begin.month : begin.month}.{begin.year} {begin.hour < 10 ? "0" + begin.hour : begin.hour}:{begin.minute < 10 ? "0" + begin.minute : begin.minute}
                   </td>

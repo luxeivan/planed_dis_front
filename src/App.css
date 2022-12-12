@@ -138,6 +138,9 @@ td {
   align-items: center;
   justify-content: space-around;
 }
+.disconnected__comment{
+  word-break: break-word;
+}
 .disconnected__edit {
   display: inline-block;
   cursor: pointer;
