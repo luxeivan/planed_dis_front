@@ -7,11 +7,13 @@ import AddNetworkNode from "./AddNetworkNode";
 import AddStreet from "./AddStreet";
 import DateTimePicker from "react-datetime-picker";
 import AddedDisconnect from "./AddedDisconnect";
+import EditNetworkNode from "./EditNetworkNode";
 
 export default function AddDisconnect() {
   const [showAddedDisconnect, setShowAddedDisconnect] = useState(false);
   const [addCity, setAddCity] = useState(false);
   const [addNetworkNode, setAddNetworkNode] = useState(false);
+  const [editNetworkNode, setEditNetworkNode] = useState(false);
   const [addStreet, setAddStreet] = useState(false);
 
   const [reloadCity, setReloadCity] = useState(false);
@@ -37,13 +39,13 @@ export default function AddDisconnect() {
   //------------Загрузка городов НАЧАЛО
   useEffect(() => {
     axios
-      .get(getCityUrl+"?pagination[pageSize]=100000", {
+      .get(getCityUrl + "?pagination[pageSize]=100000", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       })
       .then((response) => {
-        setListCity(response.data.data.sort((a,b) => (a.attributes.name > b.attributes.name) ? 1 : ((b.attributes.name > a.attributes.name) ? -1 : 0)));
+        setListCity(response.data.data.sort((a, b) => (a.attributes.name > b.attributes.name ? 1 : b.attributes.name > a.attributes.name ? -1 : 0)));
       })
       .catch((error) => {
         console.log("An error occurred:", error);
@@ -66,7 +68,7 @@ export default function AddDisconnect() {
           },
         })
         .then((response) => {
-          setListNetworkNode(response.data.data.sort((a,b) => (a.attributes.name > b.attributes.name) ? 1 : ((b.attributes.name > a.attributes.name) ? -1 : 0)));
+          setListNetworkNode(response.data.data.sort((a, b) => (a.attributes.name > b.attributes.name ? 1 : b.attributes.name > a.attributes.name ? -1 : 0)));
         })
         .catch((error) => {
           console.log("An error occurred:", error);
@@ -115,7 +117,7 @@ export default function AddDisconnect() {
     if ((selectCity, selectNetworkNode, begin, end)) {
       axios
         .post(
-          getDisconnectedUrl+"?pagination[pageSize]=100000",
+          getDisconnectedUrl + "?pagination[pageSize]=100000",
           {
             data: {
               begin: begin,
@@ -232,6 +234,17 @@ export default function AddDisconnect() {
             >
               Добавить узел
             </button>
+            {selectNetworkNode && (
+              <button
+                onClick={(event) => {
+                  event.preventDefault();
+                  setEditNetworkNode(true);
+                }}
+                className="button-main"
+              >
+                Переименовать узел
+              </button>
+            )}
           </div>
         )}
         {listStreet && (
@@ -296,12 +309,12 @@ export default function AddDisconnect() {
               </label>
               <div className="period__row">
                 <span className="period__title">Начало:</span>
-                <DateTimePicker onChange={setBegin} value={begin} showLeadingZeros={true} clearIcon={null}/>
+                <DateTimePicker onChange={setBegin} value={begin} showLeadingZeros={true} clearIcon={null} />
                 <br />
               </div>
               <div className="period__row">
                 <span className="period__title">Конец:</span>
-                <DateTimePicker onChange={setEnd} value={end} showLeadingZeros={true} clearIcon={null}/>
+                <DateTimePicker onChange={setEnd} value={end} showLeadingZeros={true} clearIcon={null} />
               </div>
             </div>
             <div className="disconnect-add__row comment">
@@ -322,6 +335,18 @@ export default function AddDisconnect() {
       {addNetworkNode && <AddNetworkNode setAddNetworkNode={setAddNetworkNode} setReloadNetworkNode={setReloadNetworkNode} cityId={selectCity} />}
       {addStreet && <AddStreet setAddStreet={setAddStreet} setReloadStreet={setReloadStreet} networkNodeId={selectNetworkNode} selectCity={selectCity} />}
       {showAddedDisconnect && <AddedDisconnect setShowAddedDisconnect={setShowAddedDisconnect} />}
+      {editNetworkNode && (
+        <EditNetworkNode
+          setEditNetworkNode={setEditNetworkNode}
+          setReloadNetworkNode={setReloadNetworkNode}
+          selectNetworkNode={selectNetworkNode}
+          currentName={listNetworkNode.filter((item) => {
+            console.log(item);
+            console.log(selectNetworkNode);
+            return item.id == selectNetworkNode;
+          })}
+        />
+      )}
     </div>
   );
 }

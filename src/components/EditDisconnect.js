@@ -10,15 +10,12 @@ export default function EditDisconnect({ editDisconnect, setEditDisconnect, setR
   const [end, setEnd] = useState();
   const [comment, setComment] = useState();
   useEffect(() => {
-    //console.log(editDisconnect);
     setBegin(new Date(editDisconnect.begin));
     setEnd(new Date(editDisconnect.end));
     setComment(editDisconnect.comment);
   }, []);
   const handlerSubmit = (event) => {
     event.preventDefault();
-
-    //console.log(event.target.dataset.id);
     axios
       .put(
         getDisconnectedUrl + `/${editDisconnect.id}`,
