@@ -2,15 +2,13 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { getCityUrl } from "../config/apiPath";
 import { DelayInput } from "react-delay-input";
-import Cookies from "js-cookie";    
-
-
+import Cookies from "js-cookie";
 
 const url = "https://suggestions.dadata.ru/suggestions/api/4_1/rs/suggest/address";
 const tokenDadata = "1c83925236f06abf69fca2921b74ce4cc8a835ed";
 
 export default function AddCity({ setReloadCity, setAddCity }) {
-    const token = Cookies.get("jwt");
+  const token = Cookies.get("jwt");
   const [address, setAddress] = useState("");
   const [listFias, setListFias] = useState();
   const [selectFias, setSelectFias] = useState();
@@ -72,11 +70,11 @@ export default function AddCity({ setReloadCity, setAddCity }) {
           }
         )
         .then((response) => {
-            console.log(response);
+          console.log(response);
         })
         .catch((error) => {
           console.log("An error occurred:", error);
-          if(error.response.data.error.message=="This attribute must be unique"){
+          if (error.response.data.error.message == "This attribute must be unique") {
             alert("Этот город уже есть в списке.");
           }
         });
@@ -87,7 +85,6 @@ export default function AddCity({ setReloadCity, setAddCity }) {
     pushCity();
     setReloadCity(true);
     setAddCity(false);
-    
   };
 
   return (
@@ -95,51 +92,53 @@ export default function AddCity({ setReloadCity, setAddCity }) {
       <form className="address-form" onSubmit={handlerSubmit}>
         <h2>Добавить город</h2>
         <div className="address-form__row">
+          <div className="address-form__input-area">
           {selectFias && <span style={{ color: "green" }}>+ </span>}
-          <DelayInput
-            minLength={2}
-            delayTimeout={1000}
-            className="address-form__input"
-            type="text"
-            value={address}
-            onChange={handlerAddress}
-            name="address"
-            onBlur={() => {
-              setTimeout(() => {
-                setShowHelp(false);
-              }, 2000);
-            }}
-            onFocus={() => {
-              setShowHelp(true);
-              setSelectFias();
-            }}
-          />
+            <DelayInput
+              minLength={2}
+              delayTimeout={1000}
+              className="address-form__input"
+              type="text"
+              value={address}
+              onChange={handlerAddress}
+              name="address"
+              onBlur={() => {
+                setTimeout(() => {
+                  setShowHelp(false);
+                }, 2000);
+              }}
+              onFocus={() => {
+                setShowHelp(true);
+                setSelectFias();
+              }}
+            />
 
-          {listFias && showHelp ? (
-            <ul className="fias-list">
-              {listFias.map((item, index) => {
-                if (item.value === address) {
-                  return false;
-                }
-                return (
-                  <li
-                    className="fias-list__item"
-                    key={index}
-                    onClick={() => {
-                      setAddress(item.value);
-                      setSelectFias(item);
-                      setListFias();
-                      setShowHelp(false);
-                    }}
-                  >
-                    {item.value}
-                  </li>
-                );
-              })}
-            </ul>
-          ) : (
-            false
-          )}
+            {listFias && showHelp ? (
+              <ul className="fias-list">
+                {listFias.map((item, index) => {
+                  if (item.value === address) {
+                    return false;
+                  }
+                  return (
+                    <li
+                      className="fias-list__item"
+                      key={index}
+                      onClick={() => {
+                        setAddress(item.value);
+                        setSelectFias(item);
+                        setListFias();
+                        setShowHelp(false);
+                      }}
+                    >
+                      {item.value}
+                    </li>
+                  );
+                })}
+              </ul>
+            ) : (
+              false
+            )}
+          </div>
           <button type="submit" className="address-form__submit" disabled={!selectFias}>
             Добавить
           </button>

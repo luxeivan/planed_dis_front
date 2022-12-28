@@ -234,6 +234,10 @@ td {
   display: block;
   color: #999;
 }
+.address-form__input-area{
+  display: inline;
+  position: relative;
+}
 .address-form__input {
   padding: 10px;
   width: 50%;
@@ -261,8 +265,8 @@ td {
   padding: 0;
   list-style: none;
   position: absolute;
-  top: 23px;
-  left: 30px;
+  top: 20px;
+  left: 0px;
   border: 1px solid #999;
 }
 .fias-list__item {
