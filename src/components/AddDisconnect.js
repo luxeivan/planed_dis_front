@@ -38,21 +38,30 @@ export default function AddDisconnect() {
   }, [begin, end]);
   //------------Загрузка городов НАЧАЛО
   useEffect(() => {
-    axios
-      .get(getCityUrl + "?pagination[pageSize]=100000", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      .then((response) => {
-        setListCity(response.data.data.sort((a, b) => (a.attributes.name > b.attributes.name ? 1 : b.attributes.name > a.attributes.name ? -1 : 0)));
-      })
-      .catch((error) => {
-        console.log("An error occurred:", error);
-        if (error.response.status == 401) {
-          window.location = "/";
-        }
-      });
+    let allCity = [];
+    let getCity = (page = 1) => {
+      axios
+        .get(getCityUrl + `?pagination[pageSize]=100&pagination[page]=${page}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((response) => {
+          allCity = allCity.concat(response.data.data)
+          if (response.data.meta.pagination.page !== response.data.meta.pagination.pageCount) {
+            getCity(page + 1);
+          }else{
+            setListCity(allCity.sort((a, b) => (a.attributes.name > b.attributes.name ? 1 : b.attributes.name > a.attributes.name ? -1 : 0)));
+          }
+        })
+        .catch((error) => {
+          console.log("An error occurred:", error);
+          if (error.response.status == 401) {
+            window.location = "/";
+          }
+        });
+    };
+    getCity();
     if (reloadCity) {
       setReloadCity(false);
     }
