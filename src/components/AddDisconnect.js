@@ -50,7 +50,7 @@ export default function AddDisconnect() {
           allCity = allCity.concat(response.data.data)
           if (response.data.meta.pagination.page !== response.data.meta.pagination.pageCount) {
             getCity(page + 1);
-          }else{
+          } else {
             setListCity(allCity.sort((a, b) => (a.attributes.name > b.attributes.name ? 1 : b.attributes.name > a.attributes.name ? -1 : 0)));
           }
         })
@@ -70,21 +70,30 @@ export default function AddDisconnect() {
   //------------Загрузка точек подключения НАЧАЛО
   useEffect(() => {
     if (selectCity) {
-      axios
-        .get(getPointConnectedUrl + `?filters[gorod][id][$eq]=${selectCity}&pagination[pageSize]=100000`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
-        .then((response) => {
-          setListNetworkNode(response.data.data.sort((a, b) => (a.attributes.name > b.attributes.name ? 1 : b.attributes.name > a.attributes.name ? -1 : 0)));
-        })
-        .catch((error) => {
-          console.log("An error occurred:", error);
-          if (error.response.status == 401) {
-            window.location = "/";
-          }
-        });
+      let allNetworkNode = [];
+      let getNetworkNode = (page = 1) => {
+        axios
+          .get(getPointConnectedUrl + `?filters[gorod][id][$eq]=${selectCity}&pagination[pageSize]=100&pagination[page]=${page}`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          })
+          .then((response) => {
+            allNetworkNode = allNetworkNode.concat(response.data.data)
+            if (response.data.meta.pagination.page !== response.data.meta.pagination.pageCount) {
+              getNetworkNode(page + 1);
+            } else {
+              setListNetworkNode(allNetworkNode.sort((a, b) => (a.attributes.name > b.attributes.name ? 1 : b.attributes.name > a.attributes.name ? -1 : 0)));
+            }
+          })
+          .catch((error) => {
+            console.log("An error occurred:", error);
+            if (error.response.status == 401) {
+              window.location = "/";
+            }
+          });
+      }
+      getNetworkNode()
     } else {
       setListNetworkNode(null);
       setListStreet(null);
@@ -99,7 +108,7 @@ export default function AddDisconnect() {
   useEffect(() => {
     if (selectCity && selectNetworkNode) {
       axios
-        .get(getStreetUrl + `?filters[uzel_podklyucheniya][id][$eq]=${selectNetworkNode}&pagination[pageSize]=100000`, {
+        .get(getStreetUrl + `?filters[uzel_podklyucheniya][id][$eq]=${selectNetworkNode}&pagination[pageSize]=100`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },

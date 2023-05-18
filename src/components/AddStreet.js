@@ -61,7 +61,7 @@ export default function AddStreet({ setReloadStreet, setAddStreet, networkNodeId
         })
           .then((response) => response.text())
           .then((result) => {
-            console.log(JSON.parse(result).suggestions);
+            //console.log(JSON.parse(result).suggestions);
             setListFias(JSON.parse(result).suggestions);
             setShowHelp(true);
           })
