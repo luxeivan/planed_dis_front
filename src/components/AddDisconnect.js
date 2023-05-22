@@ -69,7 +69,7 @@ export default function AddDisconnect() {
   //------------Загрузка городов КОНЕЦ
   //------------Загрузка точек подключения НАЧАЛО
   useEffect(() => {
-    if (selectCity) {
+    if (selectCity) {      
       let allNetworkNode = [];
       let getNetworkNode = (page = 1) => {
         axios
@@ -79,6 +79,10 @@ export default function AddDisconnect() {
             },
           })
           .then((response) => {
+            if(response.data.meta.pagination.pageCount == 0){
+              setListNetworkNode([])
+              return false
+            }
             allNetworkNode = allNetworkNode.concat(response.data.data)
             if (response.data.meta.pagination.page !== response.data.meta.pagination.pageCount) {
               getNetworkNode(page + 1);
